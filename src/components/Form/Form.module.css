@@ -9,3 +9,8 @@
   font-size: 20px;
   padding: 10px;
 }
+
+.errorMessage {
+  padding: 10px;
+  color: #b30000;
+}

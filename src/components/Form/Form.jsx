@@ -50,7 +50,9 @@ const Form = ({ title, fields, className }) => {
   return (
     <form className={`${styles.form} ${className}`} onSubmit={handleOnSubmit}>
       <h1 className={styles.title}>{title}</h1>
-      {errorMessage && <div>{errorMessage}</div>}
+      {errorMessage && (
+        <div className={styles.errorMessage}>*{errorMessage}</div>
+      )}
       {fields.map(({ label, placeholder }) => (
         <Input
           key={label}
