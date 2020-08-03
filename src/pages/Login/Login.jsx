@@ -1,7 +1,9 @@
 import React from 'react';
 
+import styles from './Login.module.css';
+
 // Components
-import Form from '../components/Form';
+import Form from '../../components/Form/Form';
 
 const Login = () => {
   const title = 'Login';
@@ -10,7 +12,7 @@ const Login = () => {
     { label: 'Password', type: 'password', placeholder: '' },
   ];
 
-  return <Form title={title} fields={fields} />;
+  return <Form className={styles.form} title={title} fields={fields} />;
 };
 
 export default Login;

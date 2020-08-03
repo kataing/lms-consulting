@@ -1,7 +1,9 @@
 import React from 'react';
 
+import styles from './Home.module.css';
+
 // Components
-import Form from '../components/Form';
+import Form from '../../components/Form/Form';
 
 const Home = () => {
   const title = 'Learning Management System Match';
@@ -44,11 +46,7 @@ const Home = () => {
     },
   ];
 
-  return (
-    <div>
-      <Form title={title} fields={fields} />
-    </div>
-  );
+  return <Form className={styles.form} title={title} fields={fields} />;
 };
 
 export default Home;

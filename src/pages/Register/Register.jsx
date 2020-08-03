@@ -1,7 +1,9 @@
 import React from 'react';
 
+import styles from './Register.module.css';
+
 // Components
-import Form from '../components/Form';
+import Form from '../../components/Form/Form';
 
 const Register = () => {
   const title = 'Register';
@@ -11,7 +13,7 @@ const Register = () => {
     { label: 'Confirm Password', type: 'password', placeholder: '' },
   ];
 
-  return <Form title={title} fields={fields} />;
+  return <Form className={styles.form} title={title} fields={fields} />;
 };
 
 export default Register;

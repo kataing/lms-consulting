@@ -4,10 +4,10 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import './App.css';
 
 // Components
-import Register from './pages/Register';
-import Login from './pages/Login';
-import Header from './components/Header';
-import Home from './pages/Home';
+import Register from './pages/Register/Register';
+import Login from './pages/Login/Login';
+import Header from './components/Header/Header';
+import Home from './pages/Home/Home';
 
 const App = () => {
   return (

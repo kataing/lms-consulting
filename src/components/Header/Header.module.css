@@ -1,0 +1,16 @@
+.header {
+  display: flex;
+  justify-content: space-evenly;
+  background-color: #2a9d8f;
+  padding: 20px;
+}
+
+.link {
+  color: #fafafa;
+  font-size: 18px;
+  border-bottom: 1px solid RGBA(0, 0, 0, 0);
+}
+
+.link:hover {
+  border-bottom: 1px solid #fafafa;
+}

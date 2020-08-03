@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 
-// Components
-import Input from './Input';
-import Button from './Button';
+import styles from './Form.module.css';
 
-const Form = ({ title, fields }) => {
+// Components
+import Input from '../Input/Input';
+import Button from '../Button/Button';
+
+const Form = ({ title, fields, className }) => {
   const [form, setForm] = useState({});
   const [errorMessage, setErrorMessage] = useState(null);
   // const _isMounted = useRef(false);
@@ -46,8 +48,8 @@ const Form = ({ title, fields }) => {
   }, []);
 
   return (
-    <form onSubmit={handleOnSubmit}>
-      <h1>{title}</h1>
+    <form className={`${styles.form} ${className}`} onSubmit={handleOnSubmit}>
+      <h1 className={styles.title}>{title}</h1>
       {errorMessage && <div>{errorMessage}</div>}
       {fields.map(({ label, placeholder }) => (
         <Input
@@ -58,7 +60,7 @@ const Form = ({ title, fields }) => {
           handleOnChange={handleOnChange}
         />
       ))}
-      <Button text={'submit'} />
+      <Button type="submit" text="Submit" />
     </form>
   );
 };
