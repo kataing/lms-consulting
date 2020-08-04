@@ -2,7 +2,7 @@ import React from 'react';
 
 import styles from './Input.module.css';
 
-const Input = ({ name, label, placeholder, handleOnChange }) => {
+const Input = ({ name, label, placeholder, handleOnChange, type }) => {
   return (
     <div className={styles.container}>
       <label className={styles.label}>{label}</label>
@@ -11,6 +11,7 @@ const Input = ({ name, label, placeholder, handleOnChange }) => {
         name={name}
         placeholder={placeholder}
         onChange={handleOnChange}
+        type={type}
       />
     </div>
   );
