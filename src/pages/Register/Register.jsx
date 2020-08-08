@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import styles from './Register.module.css';
 
@@ -10,6 +11,7 @@ import Button from '../../components/Button/Button';
 import { auth, createUserProfileDocument } from '../../firebase/firebase.utils';
 
 const Register = (props) => {
+  const history = useHistory();
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
@@ -58,7 +60,6 @@ const Register = (props) => {
         password
       );
       await createUserProfileDocument(user, { firstName, lastName });
-      console.log(user);
       setForm({
         firstName: '',
         lastName: '',
@@ -67,7 +68,7 @@ const Register = (props) => {
         confirmPassword: '',
       });
       setErrorMessage('');
-      props.history.push('/home');
+      history.push('/home');
     } catch (err) {
       setErrorMessage(err.message);
     }

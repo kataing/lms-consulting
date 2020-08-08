@@ -1,9 +1,12 @@
 import React from 'react';
+import { auth } from '../../firebase/firebase.utils';
 
 import styles from './Home.module.css';
 
 // Components
+import Header from '../../components/Header/Header';
 import Form from '../../components/Form/Form';
+import Button from '../../components/Button/Button';
 
 const Home = () => {
   const title = 'Learning Management System Match';
@@ -46,7 +49,19 @@ const Home = () => {
     },
   ];
 
-  return <Form className={styles.form} title={title} fields={fields} />;
+  const handleOnClickSignOut = (e) => {
+    auth.signOut();
+    window.location.reload();
+  };
+
+  return (
+    <>
+      <Header />
+      <div>{auth.currentUser.firstName}</div>
+      <Form className={styles.form} title={title} fields={fields} />
+      <Button text="Sign Out" type="button" onClick={handleOnClickSignOut} />
+    </>
+  );
 };
 
 export default Home;
