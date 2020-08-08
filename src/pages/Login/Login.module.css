@@ -1,3 +1,23 @@
-.form {
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
   width: 30vw;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  padding: 10px;
+}
+
+.title {
+  font-size: 20px;
+  padding: 10px;
+}
+
+.errorMessage {
+  padding: 10px;
+  color: #b30000;
 }

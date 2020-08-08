@@ -30,8 +30,8 @@ const Register = (props) => {
   };
 
   const handleOnSubmit = async (e) => {
-    const { firstName, lastName, email, password, confirmPassword } = form;
     e.preventDefault();
+    const { firstName, lastName, email, password, confirmPassword } = form;
     if (firstName.length === 0) {
       _isMounted.current && setErrorMessage('Please enter a first name');
       return;

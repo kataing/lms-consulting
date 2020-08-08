@@ -1,12 +1,14 @@
-import React from 'react';
-import { auth } from '../../firebase/firebase.utils';
+import React, { useState, useEffect, useRef } from 'react';
 
 import styles from './Home.module.css';
 
 // Components
 import Header from '../../components/Header/Header';
-import Form from '../../components/Form/Form';
+import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
+
+// Constants
+import { auth } from '../../firebase/firebase.utils';
 
 const Home = () => {
   const title = 'Learning Management System Match';
@@ -48,18 +50,75 @@ const Home = () => {
       errorMessage: 'Input 6 is a required field',
     },
   ];
+  const [form, setForm] = useState({});
+  const [errorMessage, setErrorMessage] = useState(null);
+  const _isMounted = useRef(true);
+  const _isFirstRun = useRef(true);
+
+  const handleOnChange = (e) => {
+    const name = e.target.getAttribute('name');
+    const value = e.target.value;
+    _isMounted.current &&
+      setForm((prevForm) => ({ ...prevForm, [name]: value }));
+  };
+
+  const handleOnSubmit = (e) => {
+    e.preventDefault();
+    for (let i = 0; i < fields.length; i += 1) {
+      const { label, errorMessage } = fields[i];
+      if (form[label].length === 0) {
+        _isMounted.current && setErrorMessage(errorMessage);
+        return;
+      }
+    }
+    console.log(form);
+  };
 
   const handleOnClickSignOut = (e) => {
     auth.signOut();
-    window.location.reload();
   };
+
+  useEffect(() => {
+    if (_isFirstRun.current) {
+      _isFirstRun.current = false;
+    }
+    return () => (_isMounted.current = false);
+  }, []);
+
+  // Remove after fields have been loaded
+  useEffect(() => {
+    if (!_isFirstRun.current) {
+      let form = {};
+      for (let i = 0; i < fields.length; i += 1) {
+        form[fields[i].label] = '';
+      }
+      _isMounted.current && setForm(form);
+    }
+  }, []);
 
   return (
     <>
       <Header />
       <div>{auth.currentUser.firstName}</div>
-      <Form className={styles.form} title={title} fields={fields} />
-      <Button text="Sign Out" type="button" onClick={handleOnClickSignOut} />
+      <div className={styles.formContainer}>
+        <form className={styles.form} onSubmit={handleOnSubmit}>
+          <h1 className={styles.title}>{title}</h1>
+          {errorMessage && (
+            <div className={styles.errorMessage}>*{errorMessage}</div>
+          )}
+          {fields.map(({ label, placeholder }) => (
+            <Input
+              key={label}
+              name={label}
+              label={label}
+              placeholder={placeholder}
+              handleOnChange={handleOnChange}
+            />
+          ))}
+          <Button type="submit" text="Submit" />
+        </form>
+        <Button text="Sign Out" type="button" onClick={handleOnClickSignOut} />
+      </div>
     </>
   );
 };
