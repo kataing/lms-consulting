@@ -10,10 +10,6 @@ import Button from '../../components/Button/Button';
 import { auth } from '../../firebase/firebase.utils';
 
 const Login = () => {
-  const fields = [
-    { label: 'Email', type: 'text', placeholder: 'user@email.com' },
-    { label: 'Password', type: 'password', placeholder: '' },
-  ];
   const [form, setForm] = useState({ email: '', password: '' });
   const [errorMessage, setErrorMessage] = useState(null);
   const _isFirstRun = useRef(true);

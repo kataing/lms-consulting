@@ -4,52 +4,18 @@ import styles from './Home.module.css';
 
 // Components
 import Header from '../../components/Header/Header';
-import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
+import ToggleSwitch from '../../components/ToggleSwitch/ToggleSwitch';
 
 // Constants
 import { auth, firestore } from '../../firebase/firebase.utils';
+import DISCOVERY_DATA from '../../firebase/discoverydata';
+// import DISCOVERY_DATA from '../../firebase/discoverydata;
+// import seed from '../../firebase/seed';
 
 const Home = () => {
   const title = 'Learning Management System Match';
-  // const fields = [
-  //   {
-  //     label: 'Input 1',
-  //     type: 'text',
-  //     placeholder: '',
-  //     errorMessage: 'Input 1 is a required field',
-  //   },
-  //   {
-  //     label: 'Input 2',
-  //     type: 'text',
-  //     placeholder: '',
-  //     errorMessage: 'Input 2 is a required field',
-  //   },
-  //   {
-  //     label: 'Input 3',
-  //     type: 'text',
-  //     placeholder: '',
-  //     errorMessage: 'Input 3 is a required field',
-  //   },
-  //   {
-  //     label: 'Input 4',
-  //     type: 'text',
-  //     placeholder: '',
-  //     errorMessage: 'Input 4 is a required field',
-  //   },
-  //   {
-  //     label: 'Input 5',
-  //     type: 'text',
-  //     placeholder: '',
-  //     errorMessage: 'Input 5 is a required field',
-  //   },
-  //   {
-  //     label: 'Input 6',
-  //     type: 'text',
-  //     placeholder: '',
-  //     errorMessage: 'Input 6 is a required field',
-  //   },
-  // ];
+
   const [form, setForm] = useState({});
   const [errorMessage, setErrorMessage] = useState(null);
   const [fields, setFields] = useState([]);
@@ -57,57 +23,79 @@ const Home = () => {
   const _isFirstRun = useRef(true);
 
   const handleOnChange = (e) => {
+    console.log('click');
     const name = e.target.getAttribute('name');
-    const value = e.target.value;
+    const checked = e.target.checked;
     _isMounted.current &&
-      setForm((prevForm) => ({ ...prevForm, [name]: value }));
+      setForm((prevForm) => ({ ...prevForm, [name]: checked }));
   };
 
   const handleOnSubmit = (e) => {
     e.preventDefault();
-    for (let i = 0; i < fields.length; i += 1) {
-      const { label, errorMessage } = fields[i];
-      if (form[label].length === 0) {
-        _isMounted.current && setErrorMessage(errorMessage);
-        return;
-      }
-    }
     console.log(form);
   };
 
   const getFields = async () => {
     let allSubfields = [];
+    let allFields = [];
     let fields = [];
-    firestore
-      .collection(`discovery`)
-      .get()
-      .then((snap) => {
-        // Create array of all subfields
-        snap.forEach((doc) => {
-          const data = doc.data();
-          if (data.category) {
-            allSubfields.push(doc.data());
-          }
-        });
 
-        // Create final array of fields
-        snap.forEach((doc) => {
-          const data = doc.data();
-          // Build the subfield array
-          let subfields = [];
-          if (!data.category) {
-            allSubfields.forEach((subfield) => {
-              if (data.label === subfield.category) {
-                subfields.push(subfield);
-              }
-            });
-            fields.push({ ...data, subfields });
-            subfields = [];
-          }
-        });
-        console.log(fields);
-        setFields(fields);
+    // Accessing Sample Data
+
+    // Create array of all subfields
+    DISCOVERY_DATA.forEach((item) => {
+      if (!item.category) {
+        allFields.push(item);
+      } else {
+        allSubfields.push(item);
+      }
+    });
+
+    // Create final array of fields
+    allFields.forEach((item) => {
+      // Build the subfield array
+      let subfields = [];
+      allSubfields.forEach((subfield) => {
+        if (item.label === subfield.category) {
+          subfields.push(subfield);
+        }
       });
+      fields.push({ ...item, subfields });
+      subfields = [];
+    });
+    console.log(fields);
+    setFields(fields);
+
+    // // Accessing Firestore
+    // firestore
+    //   .collection(`discovery`)
+    //   .get()
+    //   .then((snap) => {
+    //     // Create array of all subfields
+    //     snap.forEach((doc) => {
+    //       const item = doc.data();
+    //       if (!item.category) {
+    //         allFields.push(item);
+    //       } else {
+    //         allSubfields.push(item);
+    //       }
+    //     });
+
+    //     // Create final array of fields
+    //     allFields.forEach((item) => {
+    //       // Build the subfield array
+    //       let subfields = [];
+    //       allSubfields.forEach((subfield) => {
+    //         if (item.label === subfield.category) {
+    //           subfields.push(subfield);
+    //         }
+    //       });
+    //       fields.push({ ...item, subfields });
+    //       subfields = [];
+    //     });
+    //     console.log(fields);
+    //     setFields(fields);
+    //   });
   };
 
   useEffect(() => {
@@ -115,6 +103,7 @@ const Home = () => {
       _isFirstRun.current = false;
     }
     getFields();
+    // seed();
     return () => (_isMounted.current = false);
   }, []);
 
@@ -131,19 +120,19 @@ const Home = () => {
           {fields.map(({ label, subfields }) => {
             return (
               <div key={label}>
-                <Input
+                <ToggleSwitch
                   name={label}
+                  style="category"
                   label={label}
-                  // placeholder={label}
-                  onChange={handleOnChange}
+                  handleOnChange={handleOnChange}
                 />
                 {subfields.map(({ label }) => (
-                  <Input
+                  <ToggleSwitch
                     key={label}
                     name={label}
+                    style="subcategory"
                     label={label}
-                    // placeholder={label}
-                    onChange={handleOnChange}
+                    handleOnChange={handleOnChange}
                   />
                 ))}
               </div>
