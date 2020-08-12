@@ -63,14 +63,14 @@ const Login = () => {
           name="email"
           label="Email"
           placeholder="user@email.com"
-          handleOnChange={handleOnChange}
+          onChange={handleOnChange}
         />
         <Input
           name="password"
           label="Password"
           value={form.password}
           type="password"
-          handleOnChange={handleOnChange}
+          onChange={handleOnChange}
         />
         <Button type="submit" text="Submit" />
       </form>

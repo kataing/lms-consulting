@@ -8,50 +8,51 @@ import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
 
 // Constants
-import { auth } from '../../firebase/firebase.utils';
+import { auth, firestore } from '../../firebase/firebase.utils';
 
 const Home = () => {
   const title = 'Learning Management System Match';
-  const fields = [
-    {
-      label: 'Input 1',
-      type: 'text',
-      placeholder: '',
-      errorMessage: 'Input 1 is a required field',
-    },
-    {
-      label: 'Input 2',
-      type: 'text',
-      placeholder: '',
-      errorMessage: 'Input 2 is a required field',
-    },
-    {
-      label: 'Input 3',
-      type: 'text',
-      placeholder: '',
-      errorMessage: 'Input 3 is a required field',
-    },
-    {
-      label: 'Input 4',
-      type: 'text',
-      placeholder: '',
-      errorMessage: 'Input 4 is a required field',
-    },
-    {
-      label: 'Input 5',
-      type: 'text',
-      placeholder: '',
-      errorMessage: 'Input 5 is a required field',
-    },
-    {
-      label: 'Input 6',
-      type: 'text',
-      placeholder: '',
-      errorMessage: 'Input 6 is a required field',
-    },
-  ];
+  // const fields = [
+  //   {
+  //     label: 'Input 1',
+  //     type: 'text',
+  //     placeholder: '',
+  //     errorMessage: 'Input 1 is a required field',
+  //   },
+  //   {
+  //     label: 'Input 2',
+  //     type: 'text',
+  //     placeholder: '',
+  //     errorMessage: 'Input 2 is a required field',
+  //   },
+  //   {
+  //     label: 'Input 3',
+  //     type: 'text',
+  //     placeholder: '',
+  //     errorMessage: 'Input 3 is a required field',
+  //   },
+  //   {
+  //     label: 'Input 4',
+  //     type: 'text',
+  //     placeholder: '',
+  //     errorMessage: 'Input 4 is a required field',
+  //   },
+  //   {
+  //     label: 'Input 5',
+  //     type: 'text',
+  //     placeholder: '',
+  //     errorMessage: 'Input 5 is a required field',
+  //   },
+  //   {
+  //     label: 'Input 6',
+  //     type: 'text',
+  //     placeholder: '',
+  //     errorMessage: 'Input 6 is a required field',
+  //   },
+  // ];
   const [form, setForm] = useState({});
   const [errorMessage, setErrorMessage] = useState(null);
+  const [fields, setFields] = useState([]);
   const _isMounted = useRef(true);
   const _isFirstRun = useRef(true);
 
@@ -74,26 +75,47 @@ const Home = () => {
     console.log(form);
   };
 
-  const handleOnClickSignOut = (e) => {
-    auth.signOut();
+  const getFields = async () => {
+    let allSubfields = [];
+    let fields = [];
+    firestore
+      .collection(`discovery`)
+      .get()
+      .then((snap) => {
+        // Create array of all subfields
+        snap.forEach((doc) => {
+          const data = doc.data();
+          if (data.category) {
+            allSubfields.push(doc.data());
+          }
+        });
+
+        // Create final array of fields
+        snap.forEach((doc) => {
+          const data = doc.data();
+          // Build the subfield array
+          let subfields = [];
+          if (!data.category) {
+            allSubfields.forEach((subfield) => {
+              if (data.label === subfield.category) {
+                subfields.push(subfield);
+              }
+            });
+            fields.push({ ...data, subfields });
+            subfields = [];
+          }
+        });
+        console.log(fields);
+        setFields(fields);
+      });
   };
 
   useEffect(() => {
     if (_isFirstRun.current) {
       _isFirstRun.current = false;
     }
+    getFields();
     return () => (_isMounted.current = false);
-  }, []);
-
-  // Remove after fields have been loaded
-  useEffect(() => {
-    if (!_isFirstRun.current) {
-      let form = {};
-      for (let i = 0; i < fields.length; i += 1) {
-        form[fields[i].label] = '';
-      }
-      _isMounted.current && setForm(form);
-    }
   }, []);
 
   return (
@@ -106,18 +128,29 @@ const Home = () => {
           {errorMessage && (
             <div className={styles.errorMessage}>*{errorMessage}</div>
           )}
-          {fields.map(({ label, placeholder }) => (
-            <Input
-              key={label}
-              name={label}
-              label={label}
-              placeholder={placeholder}
-              handleOnChange={handleOnChange}
-            />
-          ))}
+          {fields.map(({ label, subfields }) => {
+            return (
+              <div key={label}>
+                <Input
+                  name={label}
+                  label={label}
+                  // placeholder={label}
+                  onChange={handleOnChange}
+                />
+                {subfields.map(({ label }) => (
+                  <Input
+                    key={label}
+                    name={label}
+                    label={label}
+                    // placeholder={label}
+                    onChange={handleOnChange}
+                  />
+                ))}
+              </div>
+            );
+          })}
           <Button type="submit" text="Submit" />
         </form>
-        <Button text="Sign Out" type="button" onClick={handleOnClickSignOut} />
       </div>
     </>
   );

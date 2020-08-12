@@ -90,7 +90,7 @@ const Register = (props) => {
         value={form.firstName}
         type="text"
         placeholder="Jane"
-        handleOnChange={handleOnChange}
+        onChange={handleOnChange}
       />
       <Input
         name="lastName"
@@ -98,7 +98,7 @@ const Register = (props) => {
         value={form.lastName}
         type="text"
         placeholder="Doe"
-        handleOnChange={handleOnChange}
+        onChange={handleOnChange}
       />
       <Input
         name="email"
@@ -106,21 +106,21 @@ const Register = (props) => {
         value={form.email}
         type="email"
         placeholder="user@email.com"
-        handleOnChange={handleOnChange}
+        onChange={handleOnChange}
       />
       <Input
         name="password"
         label="Password"
         value={form.password}
         type="password"
-        handleOnChange={handleOnChange}
+        onChange={handleOnChange}
       />
       <Input
         name="confirmPassword"
         label="Confirm Password"
         value={form.confirmPassword}
         type="password"
-        handleOnChange={handleOnChange}
+        onChange={handleOnChange}
       />
       <Button type="submit" text="Submit" />
     </form>
