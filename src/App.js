@@ -7,7 +7,8 @@ import './App.css';
 // Components
 import Register from './pages/Register/Register';
 import Login from './pages/Login/Login';
-import Home from './pages/Home/Home';
+import Discovery from './pages/Discovery/Discovery';
+import EditDiscovery from './pages/EditDiscovery/EditDiscovery';
 
 const App = (props) => {
   const [currentUser, setCurrentUser] = useState(null);
@@ -32,19 +33,47 @@ const App = (props) => {
 
   return (
     <div className="App">
+      <Redirect from="/" to="/login" />
       <Switch>
         <Route
           path="/register"
-          render={() => (!currentUser ? <Register /> : <Redirect to="/home" />)}
+          render={() =>
+            !currentUser ? <Register /> : <Redirect to="/discovery" />
+          }
         />
         <Route
           path="/login"
-          render={() => (!currentUser ? <Login /> : <Redirect to="/home" />)}
+          render={() =>
+            !currentUser ? <Login /> : <Redirect to="/discovery" />
+          }
         />
         <Route
           exact
-          path="/home"
-          render={() => (currentUser ? <Home /> : <Redirect to="/login" />)}
+          path="/discovery"
+          render={() =>
+            currentUser ? <Discovery /> : <Redirect to="/login" />
+          }
+        />
+        <Route
+          exact
+          path="/add-field"
+          render={() =>
+            currentUser ? <EditDiscovery /> : <Redirect to="/login" />
+          }
+        />
+        <Route
+          exact
+          path="/add-lms"
+          render={() =>
+            currentUser ? <EditDiscovery /> : <Redirect to="/login" />
+          }
+        />
+        <Route
+          exact
+          path="/edit-lms"
+          render={() =>
+            currentUser ? <EditDiscovery /> : <Redirect to="/login" />
+          }
         />
       </Switch>
     </div>

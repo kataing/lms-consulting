@@ -1,0 +1,24 @@
+.switchContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 40px;
+  padding: 0 10px;
+}
+
+.category {
+  font-weight: 900;
+  border-bottom: 1px solid #999;
+  padding: 5px;
+}
+
+.subcategory {
+  padding: 5px;
+  padding-left: 15px;
+  border-bottom: 1px dotted #999;
+}
+
+.radioLabel {
+  font-weight: 200;
+}

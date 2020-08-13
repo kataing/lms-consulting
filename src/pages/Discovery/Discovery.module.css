@@ -1,8 +1,14 @@
+.rowContainer {
+  display: flex;
+  flex-direction: row;
+}
+
 .formContainer {
   display: flex;
   flex-direction: column;
   align-self: center;
-  width: 40vw;
+  max-width: 40vw;
+  flex: 1;
 }
 
 .form {
@@ -10,7 +16,6 @@
   flex-direction: column;
   align-self: center;
   width: 100%;
-  /* padding: 10px; */
 }
 
 .title {
@@ -18,7 +23,20 @@
   padding: 10px;
 }
 
+.subTitle {
+  font-weight: 900;
+}
+
 .errorMessage {
   padding: 10px;
   color: #b30000;
+}
+
+.resultContainer {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  right: 0;
+  /* top: 0; */
+  width: 55vw;
 }

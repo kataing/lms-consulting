@@ -12,8 +12,17 @@ import { auth } from '../../firebase/firebase.utils';
 const Header = () => {
   return (
     <header className={styles.header}>
-      <Link className={styles.link} to="/">
-        GO TO HOME
+      <Link className={styles.link} to="/discovery">
+        DISCOVERY FORM
+      </Link>
+      <Link className={styles.link} to="/add-field">
+        ADD FORM FIELD
+      </Link>
+      <Link className={styles.link} to="/add-lms">
+        ADD LMS
+      </Link>
+      <Link className={styles.link} to="/edit-lms">
+        EDIT LMS
       </Link>
       <Button text="Sign Out" type="button" onClick={() => auth.signOut()} />
     </header>
