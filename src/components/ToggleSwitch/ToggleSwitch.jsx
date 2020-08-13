@@ -5,10 +5,13 @@ const ToggleSwitch = ({
   label,
   name,
   handleOnChange,
-  style,
+  styleType,
   ...otherProps
 }) => (
-  <div className={`${styles.switchContainer} ${styles[style]}`} {...otherProps}>
+  <div
+    className={`${styles.switchContainer} ${styles[styleType]}`}
+    {...otherProps}
+  >
     <label>{label}</label>
     <label className={styles.switch}>
       <input type="checkbox" onChange={handleOnChange} name={name} />

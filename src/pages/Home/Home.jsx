@@ -10,7 +10,7 @@ import ToggleSwitch from '../../components/ToggleSwitch/ToggleSwitch';
 // Constants
 import { auth, firestore } from '../../firebase/firebase.utils';
 import DISCOVERY_DATA from '../../firebase/discoverydata';
-// import DISCOVERY_DATA from '../../firebase/discoverydata;
+import LMS_DATA from '../../firebase/lmsdata';
 // import seed from '../../firebase/seed';
 
 const Home = () => {
@@ -19,11 +19,11 @@ const Home = () => {
   const [form, setForm] = useState({});
   const [errorMessage, setErrorMessage] = useState(null);
   const [fields, setFields] = useState([]);
+  const [lmsData, setLmsData] = useState([]);
   const _isMounted = useRef(true);
   const _isFirstRun = useRef(true);
 
   const handleOnChange = (e) => {
-    console.log('click');
     const name = e.target.getAttribute('name');
     const checked = e.target.checked;
     _isMounted.current &&
@@ -32,7 +32,38 @@ const Home = () => {
 
   const handleOnSubmit = (e) => {
     e.preventDefault();
-    console.log(form);
+    let formCount = 0;
+    let lmsCount = 0;
+    const fields = [];
+    const result = [];
+    // Create an array of all fields toggled to true
+    Object.keys(form).forEach((key) => {
+      formCount += 1;
+      fields.push(key);
+    });
+
+    // Search through all LMS for filtered results
+    lmsData.forEach((lms) => {
+      fields.forEach((key) => {
+        // Check if lms has requested field
+        if (Boolean(lms[key])) {
+          lmsCount += 1;
+        }
+      });
+      // If all fields match, then push to results
+      if (lmsCount === formCount) {
+        result.push(lms);
+      }
+      lmsCount = 0;
+    });
+    console.log('form', form);
+    console.log('result', result);
+    return result;
+  };
+
+  const getLmsData = async () => {
+    setLmsData(LMS_DATA);
+    console.log(LMS_DATA);
   };
 
   const getFields = async () => {
@@ -103,6 +134,7 @@ const Home = () => {
       _isFirstRun.current = false;
     }
     getFields();
+    getLmsData();
     // seed();
     return () => (_isMounted.current = false);
   }, []);
@@ -122,7 +154,7 @@ const Home = () => {
               <div key={label}>
                 <ToggleSwitch
                   name={label}
-                  style="category"
+                  styleType="category"
                   label={label}
                   handleOnChange={handleOnChange}
                 />
@@ -130,7 +162,7 @@ const Home = () => {
                   <ToggleSwitch
                     key={label}
                     name={label}
-                    style="subcategory"
+                    styleType="subcategory"
                     label={label}
                     handleOnChange={handleOnChange}
                   />
