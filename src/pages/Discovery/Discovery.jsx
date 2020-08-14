@@ -16,11 +16,11 @@ import LMS_DATA from '../../firebase/lmsdata';
 const Discovery = () => {
   const options = [
     {
-      label: 'Need',
+      label: 'Required',
       value: 1,
     },
     {
-      label: 'Want',
+      label: 'Preferred',
       value: 2,
     },
     {
@@ -33,9 +33,7 @@ const Discovery = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [discoveryData, setDiscoveryData] = useState([]);
   const [lmsData, setLmsData] = useState([]);
-  const [tier1Results, setTier1Results] = useState([]);
-  const [tier2Results, setTier2Results] = useState([]);
-  const [tier3Results, setTier3Results] = useState([]);
+  const [results, setResults] = useState([]);
   const _isMounted = useRef(true);
   const _isFirstRun = useRef(true);
 
@@ -53,6 +51,7 @@ const Discovery = () => {
     let lmsCount = 0;
     const tier1Fields = [];
     const tier2Fields = [];
+    const tier3Fields = [];
     const tier1 = [];
     const tier2 = [];
     const tier3 = [];
@@ -70,6 +69,7 @@ const Discovery = () => {
         tier2Count += 1;
         tier2Fields.push(key);
       }
+      if (form[key] === 0) tier3Fields.push(key);
     });
 
     // Search through all LMS's for selected fields
@@ -77,8 +77,6 @@ const Discovery = () => {
       // Check for all Tier 1 fields
       tier1Fields.forEach((key) => {
         // Check if LMS has requested field
-        console.log(lms.lms);
-        console.log(lms[key]);
         if (Boolean(lms[key])) {
           lmsCount += 1;
         }
@@ -112,13 +110,25 @@ const Discovery = () => {
       // Reset Counter
       lmsCount = 0;
     });
-    console.log('form', form);
-    console.log('tier1', tier1);
-    console.log('tier2', tier2);
-    console.log('tier3', tier3);
-    setTier1Results(tier1);
-    setTier2Results(tier2);
-    setTier3Results(tier3);
+
+    setResults([
+      {
+        name: 'Tier 1 - Required',
+        fields: tier1Fields,
+        items: tier1,
+      },
+      {
+        name: 'Tier 2 - Preferred',
+        fields: tier2Fields.slice(tier1Fields.length),
+        items: tier2,
+      },
+      {
+        name: 'Tier 3 - Optional',
+        fields: tier3Fields,
+        items: tier2,
+      },
+    ]);
+    window.scrollTo(0, 0);
   };
 
   const getLmsData = async () => {
@@ -235,23 +245,36 @@ const Discovery = () => {
             <Button type="submit" text="Submit" />
           </form>
         </div>
-        <div className={styles.resultContainer}>
-          <h1 className={styles.title}>Results</h1>
-          <div className={styles.subTitle}>Tier 1</div>
-          {tier1Results.map((result) => (
-            <div key={result.lms}>{result.lms}</div>
-          ))}
-          <div className={styles.subTitle}>Tier 2</div>
-          {tier2Results.map((result) => (
-            <div key={result.lms}>{result.lms}</div>
-          ))}
-          <div className={styles.subTitle}>
-            Other Systems You May Be Interested In
+        {!!results.length && (
+          <div className={styles.resultsDisplay}>
+            <h1 className={styles.title}>Results</h1>
+            <div className={styles.resultsContainer}>
+              {results.map((result) => (
+                <div className={styles.result}>
+                  <h2 className={styles.subTitle}>{result.name}</h2>
+                  {/* Fields */}
+                  <div className={styles.fieldContainer}>
+                    <h3 className={styles.header}>Selected Fields</h3>
+                    {result.fields.map((field) => (
+                      <div key={field} className={styles.item}>
+                        {field}
+                      </div>
+                    ))}
+                  </div>
+                  {/* Results */}
+                  <div className={styles.resultContainer}>
+                    <h3 className={styles.header}>Results</h3>
+                    {result.items.map((item) => (
+                      <div key={item.lms} className={styles.item}>
+                        {item.lms}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-          {tier3Results.map((result) => (
-            <div key={result.lms}>{result.lms}</div>
-          ))}
-        </div>
+        )}
       </section>
     </>
   );

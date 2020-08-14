@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import styles from './Register.module.css';
 
@@ -68,7 +68,7 @@ const Register = (props) => {
         confirmPassword: '',
       });
       setErrorMessage('');
-      history.push('/home');
+      history.push('/disovery');
     } catch (err) {
       setErrorMessage(err.message);
     }
@@ -123,6 +123,9 @@ const Register = (props) => {
         onChange={handleOnChange}
       />
       <Button type="submit" text="Submit" />
+      <Link className={styles.link} to="/login">
+        Back to Login
+      </Link>
     </form>
   );
 };

@@ -24,7 +24,9 @@ const Header = () => {
       <Link className={styles.link} to="/edit-lms">
         EDIT LMS
       </Link>
-      <Button text="Sign Out" type="button" onClick={() => auth.signOut()} />
+      <div className={styles.link} onClick={() => auth.signOut()}>
+        SIGN OUT
+      </div>
     </header>
   );
 };

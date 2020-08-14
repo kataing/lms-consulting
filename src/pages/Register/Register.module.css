@@ -18,3 +18,13 @@
   padding: 10px;
   color: #b30000;
 }
+
+.link {
+  font-size: 18px;
+  align-self: center;
+  margin: 20px;
+}
+
+.link:hover {
+  text-decoration: underline;
+}

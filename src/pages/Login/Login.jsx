@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 
 import styles from './Login.module.css';
 
@@ -69,6 +70,9 @@ const Login = () => {
           onChange={handleOnChange}
         />
         <Button type="submit" text="Submit" />
+        <Link className={styles.link} to="/register">
+          Create an Account
+        </Link>
       </form>
     </div>
   );

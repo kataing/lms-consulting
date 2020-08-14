@@ -1,6 +1,7 @@
 .rowContainer {
   display: flex;
   flex-direction: row;
+  margin-top: calc(40px + 1em);
 }
 
 .formContainer {
@@ -8,6 +9,7 @@
   flex-direction: column;
   align-self: center;
   max-width: 40vw;
+  margin: 20px;
   flex: 1;
 }
 
@@ -25,6 +27,7 @@
 
 .subTitle {
   font-weight: 900;
+  padding: 10px;
 }
 
 .errorMessage {
@@ -32,11 +35,44 @@
   color: #b30000;
 }
 
-.resultContainer {
+.resultsDisplay {
   display: flex;
   flex-direction: column;
   position: fixed;
   right: 0;
-  /* top: 0; */
+  margin: 20px;
   width: 55vw;
+}
+
+.resultsContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.result {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #999;
+  margin: 10px;
+  flex: 1;
+}
+
+.fieldContainer {
+  padding: 5px;
+  height: 200px;
+  border-bottom: 1px solid #999;
+  border-top: 1px solid #999;
+}
+
+.resultContainer {
+  padding: 5px;
+}
+
+.header {
+  text-decoration: underline;
+}
+
+.item {
+  padding: 5px;
 }
