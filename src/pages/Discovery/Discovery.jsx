@@ -36,6 +36,7 @@ const Discovery = () => {
   const [discoveryData, setDiscoveryData] = useState([]);
   const [lmsData, setLmsData] = useState([]);
   const [results, setResults] = useState([]);
+  const [errorMessage, setErrorMessage] = useState(null);
   const _isMounted = useRef(true);
   const _isFirstRun = useRef(true);
 
@@ -105,8 +106,8 @@ const Discovery = () => {
   };
 
   const checkForSubmissionErrors = () => {
-    console.log(discoveryData);
     let success = true;
+    let errorMessage = 'Please fill out all required fields';
     discoveryData.forEach((field) => {
       if (!form[field.label]) {
         field.errorMessage = `${field.label} is a required field.`;
@@ -119,8 +120,9 @@ const Discovery = () => {
         }
       });
     });
-    setDiscoveryData(discoveryData);
-    return success;
+    setDiscoveryData([...discoveryData]);
+    setErrorMessage(errorMessage);
+    return { success, errorMessage };
   };
 
   const sortLms = () => {
@@ -226,10 +228,10 @@ const Discovery = () => {
   const handleOnSubmit = async (e) => {
     e.preventDefault();
 
-    const success = checkForSubmissionErrors();
-    if (success) {
+    const result = checkForSubmissionErrors();
+    if (result.success) {
+      sortLms();
     }
-    sortLms();
 
     // Set scroll to top of page
     window.scrollTo(0, 0);
@@ -253,6 +255,9 @@ const Discovery = () => {
         <div className={styles.formContainer}>
           <form className={styles.form} onSubmit={handleOnSubmit}>
             <h1 className={styles.title}>Learning Management System Match</h1>
+            {errorMessage && (
+              <div className={styles.errorMessage}>*{errorMessage}</div>
+            )}
             {discoveryData.map(({ label, subfields, errorMessage }) => {
               return (
                 <div key={label}>

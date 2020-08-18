@@ -25,6 +25,12 @@
   padding: 10px;
 }
 
+.errorMessage {
+  padding: 10px;
+  color: #b30000;
+  font-weight: 900;
+}
+
 .subTitle {
   font-weight: 900;
   padding: 10px;
