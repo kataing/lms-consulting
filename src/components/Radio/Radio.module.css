@@ -1,12 +1,31 @@
-.switchContainer {
+.componentContainer {
+  display: flex;
+  flex-direction: column;
+  height: 3em;
+}
+
+.rowContainer {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  height: 40px;
-  padding: 0 10px;
+  width: 100%;
+  margin: auto;
 }
 
+.radioLabel {
+  font-weight: 200;
+  padding: 0 5px;
+}
+
+.errorMessage {
+  padding: 5px 0;
+  color: #b30000;
+  font-weight: 900;
+  font-size: 14px;
+}
+
+/* Themes */
 .category {
   font-weight: 900;
   border-bottom: 1px solid #999;
@@ -17,8 +36,4 @@
   padding: 5px;
   padding-left: 15px;
   border-bottom: 1px dotted #999;
-}
-
-.radioLabel {
-  font-weight: 200;
 }

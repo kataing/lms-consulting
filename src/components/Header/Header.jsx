@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import styles from './Header.module.css';
 
 // Components
-import Button from '../../components/Button/Button';
 
 // Constants
 import { auth } from '../../firebase/firebase.utils';
