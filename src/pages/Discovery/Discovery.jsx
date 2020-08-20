@@ -11,7 +11,7 @@ import Radio from '../../components/Radio/Radio';
 import { auth, firestore } from '../../firebase/firebase.utils';
 import DISCOVERY_DATA from '../../firebase/discoverydata';
 import LMS_DATA from '../../firebase/lmsdata';
-// import seed from '../../firebase/seed';
+// import { seedDiscoveryData, seedLmsData } from '../../firebase/seed';
 
 const Discovery = () => {
   const options = [
@@ -105,11 +105,21 @@ const Discovery = () => {
     //   });
   };
 
+  const handleOnChange = (e) => {
+    const parse = e.target.getAttribute('name').split(' | ');
+    const name = parse[1];
+    const id = parse[0];
+    const value = Number(e.target.value);
+    _isMounted.current &&
+      setForm((prevForm) => ({ ...prevForm, [id]: { name, value } }));
+    console.log(form);
+  };
+
   const checkForSubmissionErrors = () => {
     let success = true;
     let errorMessage = 'Please fill out all required fields';
     discoveryData.forEach((field) => {
-      if (!form[field.label]) {
+      if (!form[field.id]) {
         field.errorMessage = `${field.label} is a required field.`;
         success = false;
       } else {
@@ -117,7 +127,7 @@ const Discovery = () => {
         field.errorMessage = null;
       }
       field.subfields.forEach((subfield) => {
-        if (!form[subfield.label]) {
+        if (!form[subfield.id]) {
           subfield.errorMessage = `${subfield.label} is a required field.`;
           success = false;
         } else {
@@ -135,27 +145,31 @@ const Discovery = () => {
     let tier1Count = 0;
     let tier2Count = 0;
     let lmsCount = 0;
-    const tier1Fields = [];
-    const tier2Fields = [];
-    const tier3Fields = [];
+    const tier1FieldIds = [];
+    const tier2FieldIds = [];
+    const tier1FieldNames = [];
+    const tier2FieldNames = [];
+    const tier3FieldNames = [];
     const tier1 = [];
     const tier2 = [];
     const tier3 = [];
 
     // Create an array of all selected fields
-    Object.keys(form).forEach((key) => {
+    Object.keys(form).forEach((fieldId) => {
       // Grab all Tier 1  & Tier 2 fields
-      if (form[key] === 1) {
+      if (form[fieldId].value === 1) {
         tier1Count += 1;
         tier2Count += 1;
-        tier1Fields.push(key);
-        tier2Fields.push(key);
+        tier1FieldIds.push(fieldId);
+        tier2FieldIds.push(fieldId);
+        tier1FieldNames.push(form[fieldId].name);
       }
-      if (form[key] === 2) {
+      if (form[fieldId].value === 2) {
         tier2Count += 1;
-        tier2Fields.push(key);
+        tier2FieldIds.push(fieldId);
+        tier2FieldNames.push(form[fieldId].name);
       }
-      if (form[key] === 0) tier3Fields.push(key);
+      if (form[fieldId].value === 0) tier3FieldNames.push(form[fieldId].name);
     });
 
     // Search through all LMS's for selected fields
@@ -163,8 +177,8 @@ const Discovery = () => {
       // Track if LMS has been categorized
       let pushed = false;
       // For a single LMS, check for all Tier 1 fields
-      tier1Fields.forEach((key) => {
-        if (Boolean(lms[key])) {
+      tier1FieldIds.forEach((fieldId) => {
+        if (Boolean(lms[fieldId])) {
           lmsCount += 1;
         }
       });
@@ -172,18 +186,18 @@ const Discovery = () => {
       // If all Tier 1 fields match, then push to Tier 1
       if (lmsCount === tier1Count) {
         // If no Tier 2 fields were selected then push to Tier 1
-        if (tier1Fields.length === tier2Fields.length) {
+        if (tier1FieldIds.length === tier2FieldIds.length) {
           tier1.push(lms);
           pushed = true;
         }
         // If Tier 2 fields were selected, check for all Tier 1 & Tier 2 fields
-        if (tier1Fields.length < tier2Fields.length) {
+        if (tier1FieldIds.length < tier2FieldIds.length) {
           // Reset Counter
           lmsCount = 0;
 
           // Check for all Tier 1 & 2 fields
-          tier2Fields.forEach((key) => {
-            if (Boolean(lms[key])) {
+          tier2FieldIds.forEach((fieldId) => {
+            if (Boolean(lms[fieldId])) {
               lmsCount += 1;
             }
           });
@@ -208,28 +222,20 @@ const Discovery = () => {
     setResults([
       {
         name: 'Tier 1 - Required',
-        fields: tier1Fields,
-        items: tier1,
+        fields: tier1FieldNames,
+        items: tier1, // array of tier 1 lms
       },
       {
         name: 'Tier 2 - Preferred',
-        fields: tier2Fields.slice(tier1Fields.length),
-        items: tier2,
+        fields: tier2FieldNames,
+        items: tier2, // array of tier 2 lms
       },
       {
         name: 'Tier 3 - Optional',
-        fields: tier3Fields,
-        items: tier3,
+        fields: tier3FieldNames,
+        items: tier3, // array of tier 3 lms
       },
     ]);
-  };
-
-  const handleOnChange = (e) => {
-    const parse = e.target.getAttribute('name').split(' | ');
-    const name = parse[1]; // id = parse[0]
-    const value = Number(e.target.value);
-    _isMounted.current &&
-      setForm((prevForm) => ({ ...prevForm, [name]: value }));
   };
 
   const handleOnSubmit = async (e) => {
@@ -244,7 +250,10 @@ const Discovery = () => {
     window.scrollTo(0, 0);
   };
 
-  // useEffect(seed, []);
+  useEffect(() => {
+    // seedDiscoveryData();
+    // seedLmsData();
+  }, []);
 
   useEffect(() => {
     if (_isFirstRun.current) {
