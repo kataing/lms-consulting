@@ -21,11 +21,11 @@ const Radio = ({
             <input
               type="radio"
               onChange={handleOnChange}
-              id={option.label}
+              id={`${option.label} | ${name}`}
               name={name}
               value={option.value}
             />
-            <label htmlFor={option.label}>{option.label}</label>
+            <label htmlFor={`${option.label} | ${name}`}>{option.label}</label>
           </span>
         ))}
       </div>
