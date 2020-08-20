@@ -112,16 +112,22 @@ const Discovery = () => {
       if (!form[field.label]) {
         field.errorMessage = `${field.label} is a required field.`;
         success = false;
+      } else {
+        // Reset error message on resubmit
+        field.errorMessage = null;
       }
       field.subfields.forEach((subfield) => {
         if (!form[subfield.label]) {
           subfield.errorMessage = `${subfield.label} is a required field.`;
           success = false;
+        } else {
+          // Reset error message on resubmit
+          subfield.errorMessage = null;
         }
       });
     });
     setDiscoveryData([...discoveryData]);
-    setErrorMessage(errorMessage);
+    setErrorMessage(success ? null : errorMessage);
     return { success, errorMessage };
   };
 
@@ -219,7 +225,8 @@ const Discovery = () => {
   };
 
   const handleOnChange = (e) => {
-    const name = e.target.getAttribute('name');
+    const parse = e.target.getAttribute('name').split(' | ');
+    const name = parse[1]; // id = parse[0]
     const value = Number(e.target.value);
     _isMounted.current &&
       setForm((prevForm) => ({ ...prevForm, [name]: value }));
@@ -237,7 +244,7 @@ const Discovery = () => {
     window.scrollTo(0, 0);
   };
 
-  // useEffect(seed, [])
+  // useEffect(seed, []);
 
   useEffect(() => {
     if (_isFirstRun.current) {
@@ -258,10 +265,11 @@ const Discovery = () => {
             {errorMessage && (
               <div className={styles.errorMessage}>*{errorMessage}</div>
             )}
-            {discoveryData.map(({ label, subfields, errorMessage }) => {
+            {discoveryData.map(({ id, label, subfields, errorMessage }) => {
               return (
-                <div key={label}>
+                <div key={id}>
                   <Radio
+                    id={id}
                     name={label}
                     styleType="category"
                     label={label}
@@ -269,9 +277,10 @@ const Discovery = () => {
                     errorMessage={errorMessage}
                     handleOnChange={handleOnChange}
                   />
-                  {subfields.map(({ label, errorMessage }) => (
+                  {subfields.map(({ id, label, errorMessage }) => (
                     <Radio
-                      key={label}
+                      key={id}
+                      id={id}
                       name={label}
                       styleType="subcategory"
                       label={label}
