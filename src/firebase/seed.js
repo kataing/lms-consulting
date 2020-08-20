@@ -5,7 +5,7 @@ const data = DISCOVERY_DATA;
 
 const seed = async () => {
   for (let i = 0; i < data.length; i++) {
-    await firestore.collection('discovery').doc(data[i].label).set(data[i]);
+    await firestore.collection('discovery').doc(data[i].id).set(data[i]);
   }
 };
 
