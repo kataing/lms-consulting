@@ -30,6 +30,10 @@ const Login = () => {
       _isMounted.current && setErrorMessage('Please enter an email');
       return;
     }
+    if (!email.toLowerCase().includes('@pearadime.com')) {
+      _isMounted.current && setErrorMessage('Please use a Pear A Dime email');
+      return;
+    }
     if (password.length === 0) {
       _isMounted.current && setErrorMessage('Please enter a password');
       return;
