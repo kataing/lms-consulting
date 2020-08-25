@@ -11,9 +11,6 @@ const Radio = ({
   options,
 }) => (
   <div className={`${styles.componentContainer} ${styles[styleType]}`}>
-    {errorMessage && (
-      <div className={styles.errorMessage}>* {errorMessage}</div>
-    )}
     <div className={styles.rowContainer}>
       <label className={styles.label}>{`${id}. ${name}`}</label>
 
@@ -26,6 +23,7 @@ const Radio = ({
               id={`${id} | ${option.label}`}
               name={`${id} | ${name}`}
               value={option.value}
+              required
             />
             <label htmlFor={`${id} | ${option.label}`}>{option.label}</label>
           </span>
