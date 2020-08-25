@@ -72,7 +72,7 @@ const Register = (props) => {
         confirmPassword: '',
       });
       setErrorMessage('');
-      history.push('/discovery');
+      history.push('/discovery-form');
     } catch (err) {
       setErrorMessage(err.message);
     }
