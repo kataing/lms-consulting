@@ -11,11 +11,11 @@ import { auth } from '../../firebase/firebase.utils';
 const Header = () => {
   return (
     <header className={styles.header}>
-      <Link className={styles.link} to="/discovery">
+      <Link className={styles.link} to="/discovery-form">
         DISCOVERY FORM
       </Link>
-      <Link className={styles.link} to="/add-field">
-        ADD FORM FIELD
+      <Link className={styles.link} to="/edit-form">
+        EDIT DISCOVERY FORM
       </Link>
       <Link className={styles.link} to="/add-lms">
         ADD LMS
