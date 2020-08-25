@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { auth, firestore } from '../../firebase/firebase.utils';
 
 import styles from './Discovery.module.css';
 
@@ -8,7 +9,6 @@ import Button from '../../components/Button/Button';
 import Radio from '../../components/Radio/Radio';
 
 // Constants
-import { auth, firestore } from '../../firebase/firebase.utils';
 import DISCOVERY_DATA from '../../firebase/discoverydata';
 import LMS_DATA from '../../firebase/lmsdata';
 // import { seedDiscoveryData, seedLmsData } from '../../firebase/seed';
@@ -36,13 +36,8 @@ const Discovery = () => {
   const [discoveryData, setDiscoveryData] = useState([]);
   const [lmsData, setLmsData] = useState([]);
   const [results, setResults] = useState([]);
-  const [errorMessage, setErrorMessage] = useState(null);
   const _isMounted = useRef(true);
   const _isFirstRun = useRef(true);
-
-  const getLmsData = async () => {
-    setLmsData(LMS_DATA);
-  };
 
   const getDiscoveryData = async () => {
     let allSubfields = [];
@@ -50,59 +45,82 @@ const Discovery = () => {
     let fields = [];
 
     // Accessing Sample Data
-    // Create array of all subfields
-    DISCOVERY_DATA.forEach((item) => {
-      if (!item.category) {
-        allFields.push(item);
-      } else {
-        allSubfields.push(item);
-      }
-    });
-
-    // Create final array of fields
-    allFields.forEach((item) => {
-      // Build the subfield array
-      let subfields = [];
-      allSubfields.forEach((subfield) => {
-        if (item.label === subfield.category) {
-          subfields.push(subfield);
+    const getSampleData = () => {
+      // Create array of all subfields
+      DISCOVERY_DATA.forEach((item) => {
+        if (!item.category) {
+          allFields.push(item);
+        } else {
+          allSubfields.push(item);
         }
       });
-      fields.push({ ...item, subfields });
-      subfields = [];
-    });
-    setDiscoveryData(fields);
+
+      // Create final array of fields
+      allFields.forEach((item) => {
+        // Build the subfield array
+        let subfields = [];
+        allSubfields.forEach((subfield) => {
+          if (item.label === subfield.category) {
+            subfields.push(subfield);
+          }
+        });
+        fields.push({ ...item, subfields });
+        subfields = [];
+      });
+      setDiscoveryData(fields);
+    };
 
     // // Accessing Firestore
-    // firestore
-    //   .collection(`discovery`)
-    //   .get()
-    //   .then((snap) => {
-    //     // Create array of all subfields
-    //     snap.forEach((doc) => {
-    //       const item = doc.data();
-    //       if (!item.category) {
-    //         allFields.push(item);
-    //       } else {
-    //         allSubfields.push(item);
-    //       }
-    //     });
+    const getFirestoreData = () => {
+      firestore
+        .collection(`discovery`)
+        .get()
+        .then((snap) => {
+          // Create array of all subfields
+          snap.forEach((doc) => {
+            const item = doc.data();
+            if (!item.category) {
+              allFields.push(item);
+            } else {
+              allSubfields.push(item);
+            }
+          });
+          // Create final array of fields
+          allFields.forEach((item) => {
+            // Build the subfield array
+            let subfields = [];
+            allSubfields.forEach((subfield) => {
+              if (item.label === subfield.category) {
+                subfields.push(subfield);
+              }
+            });
+            fields.push({ ...item, subfields });
+            subfields = [];
+          });
+          setDiscoveryData(fields);
+        });
+    };
 
-    //     // Create final array of fields
-    //     allFields.forEach((item) => {
-    //       // Build the subfield array
-    //       let subfields = [];
-    //       allSubfields.forEach((subfield) => {
-    //         if (item.label === subfield.category) {
-    //           subfields.push(subfield);
-    //         }
-    //       });
-    //       fields.push({ ...item, subfields });
-    //       subfields = [];
-    //     });
-    //     console.log(fields);
-    //     setDiscoveryData(fields);
-    //   });
+    getSampleData();
+    // getFirestoreData();
+  };
+
+  const getLmsData = async () => {
+    setLmsData(LMS_DATA);
+
+    const getFirestoreData = () => {
+      const lmsData = [];
+      firestore
+        .collection(`lms`)
+        .get()
+        .then((snap) => {
+          snap.forEach((doc) => {
+            const item = doc.data();
+            lmsData.push(item);
+          });
+        });
+      setLmsData(lmsData);
+    };
   };
 
   const handleOnChange = (e) => {
@@ -112,33 +130,6 @@ const Discovery = () => {
     const value = Number(e.target.value);
     _isMounted.current &&
       setForm((prevForm) => ({ ...prevForm, [id]: { name, value } }));
-    console.log(form);
-  };
-
-  const checkForSubmissionErrors = () => {
-    let success = true;
-    let errorMessage = 'Please fill out all required fields';
-    discoveryData.forEach((field) => {
-      if (!form[field.id]) {
-        field.errorMessage = `${field.label} is a required field.`;
-        success = false;
-      } else {
-        // Reset error message on resubmit
-        field.errorMessage = null;
-      }
-      field.subfields.forEach((subfield) => {
-        if (!form[subfield.id]) {
-          subfield.errorMessage = `${subfield.label} is a required field.`;
-          success = false;
-        } else {
-          // Reset error message on resubmit
-          subfield.errorMessage = null;
-        }
-      });
-    });
-    setDiscoveryData([...discoveryData]);
-    setErrorMessage(success ? null : errorMessage);
-    return { success, errorMessage };
   };
 
   const sortLms = () => {
@@ -240,12 +231,13 @@ const Discovery = () => {
 
   const handleOnSubmit = async (e) => {
     e.preventDefault();
+    sortLms();
 
-    const result = checkForSubmissionErrors();
-    if (result.success) {
-      sortLms();
-    }
+    // Set scroll to top of page
+    window.scrollTo(0, 0);
+  };
 
+  const handleOnClick = (e) => {
     // Set scroll to top of page
     window.scrollTo(0, 0);
   };
@@ -271,10 +263,7 @@ const Discovery = () => {
         <div className={styles.formContainer}>
           <form className={styles.form} onSubmit={handleOnSubmit}>
             <h1 className={styles.title}>Learning Management System Match</h1>
-            {errorMessage && (
-              <div className={styles.errorMessage}>*{errorMessage}</div>
-            )}
-            {discoveryData.map(({ id, label, subfields, errorMessage }) => {
+            {discoveryData.map(({ id, label, subfields }) => {
               return (
                 <div key={id}>
                   <Radio
@@ -283,10 +272,9 @@ const Discovery = () => {
                     styleType="category"
                     label={label}
                     options={options}
-                    errorMessage={errorMessage}
                     handleOnChange={handleOnChange}
                   />
-                  {subfields.map(({ id, label, errorMessage }) => (
+                  {subfields.map(({ id, label }) => (
                     <Radio
                       key={id}
                       id={id}
@@ -294,14 +282,13 @@ const Discovery = () => {
                       styleType="subcategory"
                       label={label}
                       options={options}
-                      errorMessage={errorMessage}
                       handleOnChange={handleOnChange}
                     />
                   ))}
                 </div>
               );
             })}
-            <Button type="submit" text="Submit" />
+            <Button type="submit" text="Submit" onClick={handleOnClick} />
           </form>
         </div>
         {!!results.length && (
