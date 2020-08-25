@@ -1,0 +1,49 @@
+.rowContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin-top: calc(40px + 1em);
+}
+
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  max-width: 50vw;
+  margin: 20px;
+  flex: 1;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  width: 100%;
+}
+
+.title {
+  font-size: 20px;
+  padding: 10px;
+}
+
+.errorMessage {
+  padding: 10px;
+  color: #b30000;
+  font-weight: 900;
+}
+
+.fieldContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.subTitle {
+  font-weight: 900;
+  padding: 10px;
+}
+
+.subCategory {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
