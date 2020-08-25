@@ -38,25 +38,25 @@ const App = (props) => {
         <Route
           path="/register"
           render={() =>
-            !currentUser ? <Register /> : <Redirect to="/discovery" />
+            !currentUser ? <Register /> : <Redirect to="/discovery-form" />
           }
         />
         <Route
           path="/login"
           render={() =>
-            !currentUser ? <Login /> : <Redirect to="/discovery" />
+            !currentUser ? <Login /> : <Redirect to="/discovery-form" />
           }
         />
         <Route
           exact
-          path="/discovery"
+          path="/discovery-form"
           render={() =>
             currentUser ? <Discovery /> : <Redirect to="/login" />
           }
         />
         <Route
           exact
-          path="/add-field"
+          path="/edit-form"
           render={() =>
             currentUser ? <EditDiscovery /> : <Redirect to="/login" />
           }
